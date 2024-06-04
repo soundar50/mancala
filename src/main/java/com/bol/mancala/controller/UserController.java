@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,8 @@ import reactor.core.publisher.Mono;
 @Tag(name = "User API", description = "API for user management")
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private final UserService userService;
 
@@ -28,6 +32,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<UserDto> createUser(@Parameter(description = "Display name of the user", required = true) @NotBlank @RequestParam final String displayName) {
+        logger.info("Creating user with display name: {}", displayName);
         return userService.create(displayName)
                 .map(CopyUtil::toUserDto);
     }
@@ -35,6 +40,7 @@ public class UserController {
     @Operation(summary = "Get all users")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<UserDto> getAllUsers() {
+        logger.info("Getting all users");
         return userService.getAllUsers()
                 .map(CopyUtil::toUserDto);
     }

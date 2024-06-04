@@ -5,6 +5,8 @@ import com.bol.mancala.exception.InvalidRequestException;
 import com.bol.mancala.model.Game;
 import com.bol.mancala.model.PlayerRole;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -19,6 +21,8 @@ import static java.util.function.Predicate.not;
 
 @Service
 public class GamePlayService {
+
+    private static final Logger logger = LoggerFactory.getLogger(GamePlayService.class);
 
     @Autowired
     GameService gameService;
@@ -53,11 +57,13 @@ public class GamePlayService {
 
     private Mono<Game> validateMove(Game game, PlayerRole playerRole, Integer position) {
         return Mono.just(game)
+                .doOnNext(__ -> logger.info("Validating move for player {} from position {}", playerRole, position))
                 .filter(__ -> boardService.isLegalMove(game.getBoard(), playerRole, position))
                 .switchIfEmpty(Mono.error(new IllegalMoveException(format("Illegal move by player %s from position %s", playerRole, position))));
     }
 
     private void checkAndFinalizeGame(Game game) {
+        logger.info("Checking if game {} has ended", game.getId());
         if (boardService.isGameEnded(game.getBoard())) {
             boardService.collectStonesInBigPit(game.getBoard());
             PlayerRole winner = boardService.getWinner(game.getBoard()).orElse(null);
@@ -66,6 +72,7 @@ public class GamePlayService {
     }
 
     private void updatePointsAndEndGame(final @NotNull Game game, final PlayerRole winner) {
+        logger.info("Game has ended. Updating points and ending game");
         updatePointsScored(game, winner);
         game.setEnded(true);
 
@@ -80,12 +87,14 @@ public class GamePlayService {
 
     public Mono<Game> playAgain(final UUID id) {
         return gameService.getById(id)
+                .doOnNext(game -> logger.info("Request to play again for game {}", game.getId()))
                 .filter(Game::isEnded)
                 .flatMap(this::createNewMatchWithOldData)
                 .switchIfEmpty(Mono.error(new InvalidRequestException("Match has not ended")));
     }
 
     public Mono<Game> createNewMatchWithOldData(@NotNull final Game finishedGame) {
+        logger.info("Creating new match with old data. Game: {}", finishedGame.getId());
         final Game game = Game.builder()
                 .players(Map.copyOf(finishedGame.getPlayers()))
                 .pointsScored(Map.copyOf(finishedGame.getPointsScored()))
@@ -94,6 +103,7 @@ public class GamePlayService {
     }
 
     public void updatePointsScored(final Game game, final PlayerRole winner) {
+        logger.info("Updating points scored for game. Winner: {}", winner);
         final Map<PlayerRole, Integer> existingPoints = game.getPointsScored();
         Map<PlayerRole, Integer> updatedPoints;
 

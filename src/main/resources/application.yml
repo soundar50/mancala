@@ -14,8 +14,3 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
-
-logging:
-  level:
-    org.springframework.web: DEBUG
-    com.bol.mancala: INFO

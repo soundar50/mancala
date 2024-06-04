@@ -42,7 +42,7 @@ public class GameController {
     }
 
     @Operation(summary = "Make a move")
-    @PostMapping(value = "/{id}/make-move", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}/make-move", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<GameDto> makeMove(@Parameter(description = "Game ID", required = true) @PathVariable final UUID id,
                                   @Parameter(description = "Player role", required = true) @NotNull @RequestParam final PlayerRole playerRole,
                                   @Parameter(description = "Start position", required = true) @RequestParam final int position) {
@@ -51,7 +51,7 @@ public class GameController {
     }
 
     @Operation(summary = "Play again")
-    @PostMapping(value = "/{gameId}/play-again", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{gameId}/play-again", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<GameDto> playAgain(@Parameter(description = "Game ID", required = true) @PathVariable final UUID gameId) {
         return gamePlayService.playAgain(gameId)
                 .map(CopyUtil::toGameDto);
