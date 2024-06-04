@@ -33,8 +33,8 @@ Mancala is a traditional board game that involves capturing stones. This project
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/mancala-game.git
-   cd mancala-game
+   git clone https://github.com/soundar50/mancala.git
+   cd mancala
     ```
 2. Build the project:
    ```bash
