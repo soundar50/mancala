@@ -1,0 +1,9 @@
+mancala:
+  pit:
+    default-value: 2
+
+spring:
+  security:
+    user:
+      name: user
+      password: password
