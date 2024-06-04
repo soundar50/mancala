@@ -105,7 +105,7 @@ public class GameControllerTest {
         when(gamePlayService.makeMove(gameId, PlayerRole.ONE, 1)).thenReturn(Mono.just(game));
 
         // When and Then
-        webTestClient.post()
+        webTestClient.put()
                 .uri("/mancala/v1/games/{id}/make-move?playerRole=ONE&position=1", gameId)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -124,7 +124,7 @@ public class GameControllerTest {
         when(gamePlayService.playAgain(gameId)).thenReturn(Mono.just(game));
 
         // When and Then
-        webTestClient.post()
+        webTestClient.put()
                 .uri("/mancala/v1/games/{gameId}/play-again", gameId)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
