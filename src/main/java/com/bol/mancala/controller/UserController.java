@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @Operation(summary = "Get all users")
-    @GetMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<UserDto> getAllUsers() {
         return userService.getAllUsers()
                 .map(CopyUtil::toUserDto);

@@ -44,7 +44,7 @@ public class PlayerController {
     }
 
     @Operation(summary = "Get all games by player id")
-    @GetMapping(value = "/{playerId}/games", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/{playerId}/games", produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<GameDto> getGames(@Parameter(description = "Player ID", required = true) @PathVariable final UUID playerId) {
         return gamePlayService.getAllGamesByPlayer(playerId)
                 .map(CopyUtil::toGameDto);
